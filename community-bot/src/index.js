@@ -309,6 +309,20 @@ async function setupGuild(guild) {
     }
   }
 
+  const staffRoles = ["founder", "admin", "developer", "moderator", "support"]
+    .map(key => state.roles[key]).filter(Boolean);
+  const staffOverwrites = [
+    { id: guild.roles.everyone.id, deny: [PermissionFlagsBits.ViewChannel] },
+    ...staffRoles.map(id => ({ id, allow: [
+      PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages,
+      PermissionFlagsBits.ReadMessageHistory
+    ]}))
+  ];
+  const staffCategory = await ensureCategory(guild, "staff", "NYX STAFF", staffOverwrites);
+  for (const name of ["staff-chat", "mod-logs", "staff-announcements", "bot-logs"]) {
+    await ensureTextChannel(guild, name, name, staffCategory, staffOverwrites);
+  }
+
   const ticketCategory = await ensureCategory(guild, "tickets", "NYX SUPPORT TICKETS");
   state.categories.tickets = ticketCategory.id;
   saveState();
@@ -338,6 +352,10 @@ async function createTicket(interaction) {
   const supportRoleId = SUPPORT_ROLE_ID || state.roles.support || state.roles.admin;
   const overwrites = [
     { id: guild.roles.everyone.id, deny: [PermissionFlagsBits.ViewChannel] },
+    { id: client.user.id, allow: [
+      PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages,
+      PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ManageChannels
+    ]},
     { id: interaction.user.id, allow: [
       PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages,
       PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles
