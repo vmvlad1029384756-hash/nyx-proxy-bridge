@@ -1,0 +1,46 @@
+name: Build NYX Windows installer
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify application payload
+        shell: pwsh
+        run: |
+          $exe = "installer/payload/NyxProxyBridge.exe"
+          if (!(Test-Path $exe)) {
+            throw "Missing $exe. Upload NyxProxyBridge.exe to installer/payload/ first."
+          }
+          $item = Get-Item $exe
+          Write-Host "Payload size: $($item.Length) bytes"
+
+      - name: Install Inno Setup
+        run: choco install innosetup --yes --no-progress
+
+      - name: Compile installer
+        shell: pwsh
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /Qp "installer/NYXProxyBridge.iss"
+          if ($LASTEXITCODE -ne 0) { throw "Inno Setup compilation failed." }
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0
+          name: NYX Proxy Bridge 1.0.0
+          body: |
+            Первый публичный установщик NYX Proxy Bridge для Windows x64.
+
+            Установщик позволяет выбрать папку и диск, создаёт ярлык в меню «Пуск» и предлагает ярлык на рабочем столе.
+          files: installer/Output/NYXProxyBridge_Setup.exe
+          make_latest: true
+          fail_on_unmatched_files: true
