@@ -309,7 +309,10 @@ async function setupGuild(guild) {
     const category = await ensureCategory(guild, group.key, group.name, isPrivate ? privateOverwrites : []);
     for (const [channelName, , panelKey] of group.channels) {
       const channel = await ensureTextChannel(guild, channelName, channelName, category);
-      if (panelSpecs[panelKey]) await upsertPanel(channel, panelKey);
+      if (panelSpecs[panelKey]) {
+        state.channels[panelKey] = channel.id;
+        await upsertPanel(channel, panelKey);
+      }
     }
   }
 
