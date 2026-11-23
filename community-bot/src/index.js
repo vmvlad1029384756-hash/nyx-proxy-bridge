@@ -30,6 +30,9 @@ if (!DISCORD_TOKEN || !DISCORD_CLIENT_ID) {
 const dataDir = path.resolve(DATA_DIR);
 fs.mkdirSync(dataDir, { recursive: true });
 const stateFile = path.join(dataDir, "state.json");
+let bannerMap = {};
+try { bannerMap = JSON.parse(process.env.BANNERS_JSON || "{}"); }
+catch { console.warn("BANNERS_JSON is invalid JSON; using built-in banner settings."); }
 
 function readState() {
   try { return JSON.parse(fs.readFileSync(stateFile, "utf8")); }
@@ -270,7 +273,8 @@ async function ensureTextChannel(guild, key, name, parent, overwrites = []) {
 async function upsertPanel(channel, key) {
   const spec = panelSpecs[key];
   if (!spec) return;
-  const payload = { embeds: [makeEmbed(spec)], components: panelComponents(spec) };
+  const banner = bannerMap[key] || spec.banner;
+  const payload = { embeds: [makeEmbed({ ...spec, banner })], components: panelComponents(spec) };
   const oldId = state.panels[key];
   let message = null;
   if (oldId) {
