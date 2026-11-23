@@ -206,13 +206,38 @@ const panelSpecs = {
   }
 };
 
-function makeEmbed(spec) {
+const panelVisuals = {
+  welcome:        { color: 0x8B5CF6, icon: "✦", section: "START HERE" },
+  rules:          { color: 0xA78BFA, icon: "◈", section: "COMMUNITY STANDARD" },
+  language:       { color: 0x7C3AED, icon: "◎", section: "PERSONALIZE YOUR EXPERIENCE" },
+  guide:          { color: 0x6D5AA8, icon: "⌘", section: "SERVER NAVIGATION" },
+  projects:       { color: 0x8B5CF6, icon: "⬡", section: "THE NYX ECOSYSTEM" },
+  announcements:  { color: 0xA78BFA, icon: "◉", section: "OFFICIAL NEWS" },
+  roadmap:        { color: 0x7C3AED, icon: "➤", section: "WHAT'S NEXT" },
+  updates:        { color: 0x8B5CF6, icon: "↗", section: "RELEASE NOTES" },
+  proxy:          { color: 0x6D5AA8, icon: "⌁", section: "PROJECT SPACE" },
+  projectSupport: { color: 0x7C3AED, icon: "✚", section: "GET PROJECT HELP" },
+  feedback:       { color: 0xA78BFA, icon: "◇", section: "HELP US IMPROVE" },
+  ideas:          { color: 0x8B5CF6, icon: "✧", section: "BUILD WHAT'S NEXT" },
+  general:        { color: 0x6D5AA8, icon: "◌", section: "COMMUNITY LOUNGE" },
+  offtopic:       { color: 0x6D5AA8, icon: "☾", section: "BEYOND NYX" },
+  showcase:       { color: 0xA78BFA, icon: "✦", section: "COMMUNITY CREATIONS" },
+  suggestions:    { color: 0x8B5CF6, icon: "◇", section: "YOUR IDEAS MATTER" },
+  polls:          { color: 0x7C3AED, icon: "◉", section: "COMMUNITY VOTES" },
+  helpdesk:       { color: 0xA78BFA, icon: "✚", section: "PRIVATE SUPPORT" },
+  bugs:           { color: 0x7C3AED, icon: "⌁", section: "REPORT A PROBLEM" },
+  partners:       { color: 0x8B5CF6, icon: "⬡", section: "BUILD TOGETHER" },
+  collaborations: { color: 0xA78BFA, icon: "✧", section: "LET'S COLLABORATE" }
+};
+
+function makeEmbed(spec, key) {
+  const visual = panelVisuals[key] || { color: PURPLE, icon: "✦", section: "NYX COMMUNITY" };
   const embed = new EmbedBuilder()
-    .setColor(PURPLE)
-    .setTitle(spec.title)
-    .setDescription(spec.description)
-    .setFooter({ text: spec.footer || "NYX COMMUNITY · CONNECT. BUILD. EVOLVE." })
-    .setTimestamp();
+    .setColor(visual.color)
+    .setAuthor({ name: "NYX  /  OFFICIAL COMMUNITY" })
+    .setTitle(`${visual.icon}  ${spec.title}`)
+    .setDescription(`**${visual.section}**\n\n${spec.description}`)
+    .setFooter({ text: `${spec.footer || "CONNECT. BUILD. EVOLVE."}  •  POWERED BY NYX CORE` });
   if (spec.banner && /^https:\/\//i.test(spec.banner)) embed.setImage(spec.banner);
   return embed;
 }
@@ -274,7 +299,7 @@ async function upsertPanel(channel, key) {
   const spec = panelSpecs[key];
   if (!spec) return;
   const banner = bannerMap[key] || spec.banner;
-  const payload = { embeds: [makeEmbed({ ...spec, banner })], components: panelComponents(spec) };
+  const payload = { embeds: [makeEmbed({ ...spec, banner }, key)], components: panelComponents(spec) };
   const oldId = state.panels[key];
   let message = null;
   if (oldId) {
