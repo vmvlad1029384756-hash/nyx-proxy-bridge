@@ -11,7 +11,8 @@ Official Discord bot foundation for the wider NYX ecosystem (not only NYX Proxy 
 - Rules acceptance button that grants the NYX Member role
 - Private support ticket creation and close button
 - Optional individual banner URLs for every channel panel via `BANNERS_JSON`
-- Private staff category and staff-only channels\n- Local JSON state file for panel, role, category and channel IDs
+- Private staff category and staff-only channels
+- Local JSON state file for panel, role, category and channel IDs
 
 ## Requirements
 
