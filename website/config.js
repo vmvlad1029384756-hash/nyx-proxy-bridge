@@ -1,0 +1,1 @@
+window.NYX_CONFIG={githubRepo:"vmvlad1029384756-hash/nyx-proxy-bridge",version:"1.0.0",installerName:"NYXProxyBridge_Setup.exe"};
