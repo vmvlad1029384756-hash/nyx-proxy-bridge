@@ -10,8 +10,8 @@ Official Discord bot foundation for the wider NYX ecosystem (not only NYX Proxy 
 - RU / EN language role selector
 - Rules acceptance button that grants the NYX Member role
 - Private support ticket creation and close button
-- Optional per-channel banner URLs
-- Local JSON state file for panel, role, category and channel IDs
+- Optional individual banner URLs for every channel panel via `BANNERS_JSON`
+- Private staff category and staff-only channels\n- Local JSON state file for panel, role, category and channel IDs
 
 ## Requirements
 
@@ -43,7 +43,7 @@ npm start
 
 ## Banner images
 
-Set direct HTTPS image URLs in the matching `BANNER_*` variables. If unset, the panel still renders cleanly without an image. Use a consistent black / violet NYX visual system, with a distinct title and symbol for each channel.
+Set direct HTTPS image URLs in `BANNERS_JSON`, using panel keys such as `welcome`, `rules`, `projects`, `helpdesk` and `partners`. Built-in `BANNER_*` variables are also supported for selected panels. If unset, the panel still renders cleanly without an image. Use a consistent black / violet NYX visual system, with a distinct title and symbol for each channel.
 
 ## Important notes
 
